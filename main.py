@@ -9,8 +9,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://janitorai.com"],
     allow_credentials=True,
-    allow_methods=["POST"],
-    allow_headers=["authorization, content-type"],
+    allow_methods=["POST", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 def openai_stream_generator(data, url, key):
