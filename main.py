@@ -18,8 +18,8 @@ def openai_stream_generator(data, url, key):
         base_url = url,
         api_key = key
     )
-  
-    completion = client.chat.completions.create(
+
+    completion = client.chat.completions.create(
         model=data.get("model"),
         messages=data.get("messages"),
         temperature=data.get("temperature"),
@@ -32,7 +32,7 @@ def openai_stream_generator(data, url, key):
 @app.post("/proxy")
 async def callApi(reqest: Request, url: str, Authorization: str = Header("None")):
     data = await reqest.json()
-    
+
     key = Authorization.replace("Bearer ", "")
-    
+
     return StreamingResponse(openai_stream_generator(data, url, key), media_type="text/event-stream")
