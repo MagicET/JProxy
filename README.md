@@ -19,8 +19,13 @@ This is a proxy server for JanitorAI to bypass CORS errors of strict LLM APIs li
     - Custom Prompt: pls someone tell me a good custom prompt
   
 6. Choose option
-   - You can use a option, reasoning. The <think> section will be visible. To use it, add `&reasoning=visible` to the Proxy URL
-       - The full URL will be like this: `https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1&reasoning=visible`
+    - You can add options to the Proxy URL
+        - `reasoning=force`
+            - The <think> section will be visible. If you're using models with both reasoning and non-reasoning versions like DeepSeek-V3.1, this option forces to enable reasoning.
+            - The full URL will be like this: `https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1&reasoning=force`
+        - `reasoning=visible`
+            - The <think> section will be visible. Unlike `reasoning=force`, this option doesn't force to enable reasoning. To use it, add `&reasoning=visible` to the Proxy URL
+            - The full URL will be like this: `https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1&reasoning=visible`
 
 That's it. All you need is use the weird proxy URL. This will basically work for any API services.
 

@@ -26,7 +26,8 @@ async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authoriz
                 model=data.get("model"),
                 messages=data.get("messages"),
                 temperature=data.get("temperature"),
-                stream=data.get("stream")
+                stream=data.get("stream"),
+                extra_body={"chat_template_kwargs": {"thinking":True}} if reasoning == "force" else {},
             )
             
             return completion
@@ -37,7 +38,7 @@ async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authoriz
         is_in_reasnoning = False
 
         for chunk in completion:
-                if reasoning == "visible":
+                if reasoning == "visible" or reasoning == "force":
                     if chunk.choices[0].delta.reasoning_content is not None:
                         if not is_in_reasnoning:
                             is_in_reasnoning = True
