@@ -14,7 +14,7 @@ app.add_middleware(
 )
 
 @app.post("/proxy")
-async def callApi(reqest: Request, url: str, Authorization: str = Header("None")):
+async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authorization: str = Header("None")):
     def openai_stream_caller(data, url, key):
         try:
             client = OpenAI(
@@ -34,7 +34,19 @@ async def callApi(reqest: Request, url: str, Authorization: str = Header("None")
             raise HTTPException(status_code=e.status_code, detail=str(e.body))
     
     def completion_generator(completion):
+        is_in_reasnoning = False
+
         for chunk in completion:
+                if reasoning == "visible":
+                    if chunk.choices[0].delta.reasoning_content is not None:
+                        if not is_in_reasnoning:
+                            is_in_reasnoning = True
+                            yield 'data: {"choices":[{"delta":{"content":" <think>"}}]}\n\n'
+                        chunk.choices[0].delta.content = chunk.choices[0].delta.reasoning_content
+                    else:
+                        if is_in_reasnoning:
+                            is_in_reasnoning = False
+                            yield 'data: {"choices":[{"delta":{"content":" </think>"}}]}\n\n'
                 yield "data: " + chunk.json() + "\n\n"
 
     data = await reqest.json()
