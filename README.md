@@ -1,27 +1,24 @@
-# Deploy FastAPI on Render
+# JProxy
+This is a proxy server for JanitorAI to bypass CORS errors of strict LLM APIs like NVIDIA NIM and Vercel AI Gateway.
 
-Use this repo as a template to deploy a Python [FastAPI](https://fastapi.tiangolo.com) service on Render.
+# How to use (NVIDIA NIM for example)
+1. Go to https://build.nvidia.com/ and follow the instruction of getting API key.
 
-See https://render.com/docs/deploy-fastapi or follow the steps below:
+2. Choose the model you use.
+    - Recommendations: deepseek-ai/deepseek-v3.1, qwen/qwen3-235b-a22b, mistralai/mistral-medium-3-instruct, openai/gpt-oss-120b (censored)
 
-## Manual Steps
+4. Go to JanitorAI, add a new proxy configuration.
 
-1. You may use this repository directly or [create your own repository from this template](https://github.com/render-examples/fastapi/generate) if you'd like to customize the code.
-2. Create a new Web Service on Render.
-3. Specify the URL to your new repository or this repository.
-4. Render will automatically detect that you are deploying a Python service and use `pip` to download the dependencies.
-5. Specify the following as the Start Command.
+5. Insert the informations
+    - Configuration Name: As you want
+    - Model Name: One of the model names I said above or from the official page
+    - **Proxy URL: https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1**
+        - This is the most important part, insert the URL of the API service after `?url=`, and `/chat/completions` is not needed
+    - API Key: Your API key from the service
+    - Custom Prompt: pls someone tell me a good custom prompt
 
-    ```shell
-    uvicorn main:app --host 0.0.0.0 --port $PORT
-    ```
+That's it. All you need is use the weird proxy URL. This will basically work for any API services.
 
-6. Click Create Web Service.
+Reddit Account if you want to contact: https://www.reddit.com/user/Magicet-12/
 
-Or simply click:
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/render-examples/fastapi)
-
-## Thanks
-
-Thanks to [Harish](https://harishgarg.com) for the [inspiration to create a FastAPI quickstart for Render](https://twitter.com/harishkgarg/status/1435084018677010434) and for some sample code!
+Built with Render.com. Thanks!
