@@ -10,6 +10,7 @@ This is a proxy server for JanitorAI to bypass CORS errors of strict LLM APIs li
 4. Go to JanitorAI, add a new proxy configuration.
 
 5. Insert the informations
+    - ![IMG_2467](https://github.com/user-attachments/assets/39e59e94-a1b7-401f-aa92-4aa3070d2bff)
     - Configuration Name: As you want
     - Model Name: One of the model names I said above or from the official page
     - **Proxy URL: https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1**
