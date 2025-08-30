@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=check,content_copy,open_in_new" />
+
+    <title>JProxy</title>
+    
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Jura:wght@400&family=Jura:wght@700&display=swap");
+
+        body {
+            --main-color: #ae99ff;
+            font-family:
+                -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
+                "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #313338;
+            color: white;
+            padding: 1rem 10vw;
+            margin: 0;
+        }
+        
+        hr {
+            border: solid 0.5px #FFFFFF88;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: "Jura", sans-serif;
+            color: var(--main-color);
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+
+        ul {
+            list-style-type: disc;
+        }
+
+        li {
+            margin: 0.4rem 0;
+        }
+
+        a {
+            color: var(--main-color);
+            text-decoration: none;
+            svg {
+                height: 0.9rem;
+                translate: 0 0.1rem;
+                path {
+                    fill: var(--main-color);
+                }
+            }
+
+            &[target="_blank"]::after {
+                content: "open_in_new";
+                font-family: 'Material Symbols Rounded';
+                font-size: 1em;
+                margin-left: 0.1em;
+                display: inline-block;
+                translate: 0 0.15em;
+            }
+        }
+
+        code {
+            background-color: #FFFFFF10;
+            font-size: 0.9rem;
+            padding: 0.05rem 0.2rem;
+            border-radius: 0.3rem;
+
+        }
+
+        code.copy {
+            cursor: pointer;
+            background-color: #FFFFFF20;
+            transition: 0.1s;
+
+            &::after {
+                content: "content_copy";
+                font-family: 'Material Symbols Rounded';
+                font-size: 0.9em;
+                color: var(--main-color);
+                margin-left: 0.3em;
+                translate: 0 0.1em;
+                display: inline-block;
+                transition: 0.1s;
+            }
+
+            &:hover {
+                outline: 2px solid var(--main-color);
+                background-color: #FFFFFF30;
+            }
+
+            &.copied {
+                color: var(--main-color);
+
+                &::after {
+                    content: "check";
+                }
+            }
+        }
+
+        .modelpage {
+            margin-left: 0.5rem;
+        }
+        
+        img {
+            width: auto;
+            height: auto;
+            max-width: 20rem;
+            max-height: 20rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="jproxy">JProxy</h1>
+    <p>This is a proxy server service for JanitorAI to bypass CORS error of strict LLM APIs like NVIDIA NIM or Vercel AI Gateway.
+    </p>
+
+    <hr>
+
+    <h2 id="how-to-use">How to use</h1>
+    <h3>NVIDIA NIM</h3>
+    <p>General Information:</p>
+    <ul>
+        <li>Limit: 40 requests per minute</li>
+        <li>Can't be access directly from JanitorAI due to CORS error</li>
+        <li>Free <strong>for prototyping, research, development, testing, learning</strong>, note that using for JAI is <strong>outside the scope of the purpose</strong></li>
+    </ul>
+    <p>Steps to use:</p>
+    <ol>
+        <li>
+            <p>Go to <a target="_blank" href="https://build.nvidia.com/">https://build.nvidia.com/</a>, create an account and get the API key.</p>
+            <ol>
+                <li>Press "Login" button and enter your Email id</li>
+                <li>Fill out the form, read ToS and Privacy Policy, finish the Email verification and create an account.</li>
+                <li>Press the account icon on the top right and go to <a target="_blank" href="https://build.nvidia.com/settings/api-keys">API Key</a> page.</li>
+                <li>Press "Generate API Key" button, enter the name and the expiration.</li>
+                <li>Keep the key somewhere safely. You will use it in the next step.</li>
+            </ol>
+        </li>
+        <li>
+            <p>Choose the model you use.</p>
+            <ul>
+                <li>You can browse for models in this page: <a target="_blank" href="https://build.nvidia.com/models">https://build.nvidia.com/models</a></li>
+                <li>Model Recommendations: 
+                    <ul>
+                        <li>
+                            <code class="copy">deepseek-ai/deepseek-v3.1</code>
+                            <a target="_blank" class="modelpage" href="https://build.nvidia.com/deepseek-ai/deepseek-v3_1/modelcard">Model Page</a>
+                        </li>
+                        <li>
+                            <code class="copy">qwen/qwen3-235b-a22b</code>
+                            <a target="_blank" class="modelpage" href="https://build.nvidia.com/deepseek-ai/deepseek-v3_1/modelcard">Model Page</a>
+                        </li>
+                        <li>
+                            <code class="copy">mistralai/mistral-medium-3-instruct</code>
+                            <a target="_blank" class="modelpage" href="https://build.nvidia.com/deepseek-ai/deepseek-v3_1/modelcard">Model Page</a>
+                        </li>
+                        <li>
+                            <code class="copy">openai/gpt-oss-120b</code> (censored)
+                            <a target="_blank" class="modelpage" href="https://build.nvidia.com/deepseek-ai/deepseek-v3_1/modelcard">Model Page</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <p>Go to JanitorAI, add a new proxy configuration.</p>
+        </li>
+        <li>
+            <p>Fill out the settings.</p>
+            <ul>
+                <img width="750" height="817" src="https://github.com/user-attachments/assets/39e59e94-a1b7-401f-aa92-4aa3070d2bff">
+                <li>Configuration Name: As you want</li>
+                <li>Model Name: One of the model names I said above or from the official page</li>
+                <li><strong>Proxy URL:</strong>
+                    <code class="copy">https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1</code>
+                    <ul>
+                        <li>This is the most important part, insert the URL of the API service after <code>?url=</code>, and
+                            <code>/chat/completions</code> is not needed</li>
+                    </ul>
+                </li>
+                <li>API Key: Your API key from the service</li>
+                <li>Custom Prompt: pls someone tell me a good custom prompt</li>
+            </ul>
+        </li>
+        <li>
+            <p>Choose options. (optional)</p>
+            <ul>
+                <li>You can add options to the Proxy URL.<ul>
+                        <li><code class="copy">reasoning=force</code>
+                            <ul>
+                                <li>The <code>&lt;think&gt;</code> section will be visible. If you're using models with both reasoning and
+                                        non-reasoning modes like DeepSeek-V3.1, this option forces them to enable reasoning. To use it, add
+                                        <code class="copy">&amp;reasoning=force</code> to the end of the Proxy URL.
+                                </li>
+                                <li>The full URL will be like this: <br>
+                                    <code class="copy">https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1&amp;reasoning=force</code>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><code class="copy">reasoning=visible</code>
+                            <ul>
+                                <li>The <code>&lt;think&gt;</code> section will be visible. Unlike <code>reasoning=force</code>, this option
+                                        doesn't force to enable reasoning. To use it, add
+                                        <code class="copy">&amp;reasoning=visible</code> to the end of the Proxy URL.</li>
+                                <li>The full URL will be like this: <br>
+                                    <code class="copy">https://jproxy.onrender.com/proxy?url=https://integrate.api.nvidia.com/v1&amp;reasoning=visible</code>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ol>
+
+    <hr>
+
+    <h3>Vercel AI Gateway</h3>
+    <ul>
+        <li>Limit: monthly $5 credit</li>
+        <li>Can't be access directly from JanitorAI due to CORS error</li>
+        <li>You can test many proprietary flagship models singlehandedly</li>
+    </ul>
+    <p>Steps to use:</p>
+    <ol>
+        <li>
+            <p>Go to <a target="_blank" href="https://vercel.com/">https://vercel.com/</a>, create an account and get the API key.</p>
+            <ul>
+                <li>Create an account. You can use Google, Github, GitLab, or BitBucket.</li>
+                <li>Go to Dashboard, select AI Gateway, and press Create an API Key.</li>
+            </ul>
+        </li>
+        <li>
+            <p>Choose the model you use.</p>
+            <ul>
+                <li>You can browse for models in this page: <a target="_blank" href="https://vercel.com/ai-gateway/models">https://vercel.com/ai-gateway/models</a></li>
+                <li>Models for example: 
+                    <ul>
+                        <li>
+                            <code class="copy">deepseek/deepseek-v3.1</code>
+                            <a target="_blank" class="modelpage" href="https://vercel.com/ai-gateway/models/deepseek-v3.1">Model Page</a>
+                        </li>
+                        <li>
+                            <code class="copy">google/gemini-2.5-pro</code>
+                            <a target="_blank" class="modelpage" href="https://vercel.com/ai-gateway/models/gemini-2.5-pro">Model Page</a>
+                        </li>
+                        <li>
+                            <code class="copy">anthropic/claude-opus-4</code>
+                            <a target="_blank" class="modelpage" href="https://vercel.com/ai-gateway/models/claude-opus-4">Model Page</a>
+                        </li>
+                        <li>
+                            <code class="copy">xai/grok-4</code>
+                            <a target="_blank" class="modelpage" href="https://vercel.com/ai-gateway/models/grok-4">Model Page</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <p>Go to JanitorAI, set up a new Proxy configuration.</p>
+            <ul>
+                <li>The rest is the same.</li>
+                <li>Proxy URL: <code class="copy">https://jproxy.onrender.com/proxy?url=https://ai-gateway.vercel.sh/v1</code></li>
+                <li>Don't forget not to write <code>/chat/completions</code>.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Other Proxy Services</h3>
+    <p>You can use other Proxy services as well. All you need is to use the URL: <code class="copy">https://jproxy.onrender.com/proxy?url=&lt;Proxy service's URL&gt;</code></p>
+
+    <hr>
+
+    <p>
+        Thank you for using!
+    </p>
+
+    <ul>
+        <li>My Reddit Account if you want to contact me: 
+            <a  target="_blank" href="https://www.reddit.com/user/Magicet-12/">https://www.reddit.com/user/Magicet-12/</a>
+        </li>
+        <li>
+            Create an issue if you find a bug or want to request a new feature: 
+            <a target="_blank" href="https://github.com/MagicET/JProxy">https://github.com/MagicET/JProxy</a>
+        </li>
+        <li>
+            My other project, a browser extension to improve the experience of JanitorAI:
+            <a target="_blank" href="https://github.com/MagicET/Custodian">https://github.com/MagicET/Custodian</a>
+            <ul>
+                <li>Features</li>
+                    <ul>
+                        <li>Light theme</li>
+                        <li>Showing images from catbox.moe on bots' description</li>
+                        <li>Hiding the header when chatting</li>
+                        <li>Maximizing the textbox when chatting</li>
+                        <li>Changing the color of the text when editing back to white</li>
+                    </ul>
+            </ul>
+        </li>
+        <li>
+            Built with <a target="_blank" href="https://render.com/">Render.com</a>. Thanks!
+        </li>
+    </ul>
+
+    <script>
+        document.querySelectorAll("code.copy").forEach(copy => {
+            copy.addEventListener("click", () => {
+                navigator.clipboard.writeText(copy.textContent);
+                copy.classList.add("copied");
+                setTimeout(() => {
+                    copy.classList.remove("copied");
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

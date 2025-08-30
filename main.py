@@ -1,17 +1,36 @@
 from openai import OpenAI, OpenAIError
-from fastapi import FastAPI, Request, Header, HTTPException
-from fastapi.responses import StreamingResponse
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request, Response, Header, HTTPException
+from fastapi.responses import StreamingResponse, HTMLResponse, RedirectResponse
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://janitorai.com"],
-    allow_credentials=True,
-    allow_methods=["POST", "OPTIONS"],
-    allow_headers=["*"],
-)
+@app.get("/")
+async def root():
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET"
+    }
+    with open("index.html", "r", encoding="utf-8") as html:
+        return HTMLResponse(content=html.read(), headers=headers)
+
+@app.get("/proxy")
+async def redirect_to_root():
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET"
+    }
+    return RedirectResponse(url="/", headers=headers)
+
+@app.options("/proxy")
+async def preflight_handler():
+    headers = {
+        "Access-Control-Allow-Origin": "https://janitorai.com",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Content-Type",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "600"
+    }
+    return Response(headers=headers)
 
 @app.post("/proxy")
 async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authorization: str = Header("None")):
@@ -54,9 +73,15 @@ async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authoriz
 
     key = Authorization.replace("Bearer ", "")
 
+    headers = {
+        "Access-Control-Allow-Origin": "https://janitorai.com",
+        "Access-Control-Allow-Credentials": "true"
+    }
+
     try:
         completion = openai_stream_caller(data, url, key)
     except HTTPException as e:
+        e.headers = headers
         raise e
     else:
-        return StreamingResponse(completion_generator(completion), media_type="text/event-stream")
+        return StreamingResponse(completion_generator(completion), media_type="text/event-stream", headers=headers)
