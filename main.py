@@ -39,7 +39,7 @@ async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authoriz
 
         for chunk in completion:
                 if reasoning == "visible" or reasoning == "force":
-                    if chunk.choices[0].delta.reasoning_content is not None:
+                    if getattr(chunk.choices[0].delta, "reasoning_content", None) is not None:
                         if not is_in_reasnoning:
                             is_in_reasnoning = True
                             yield 'data: {"choices":[{"delta":{"content":" <think>"}}]}\n\n'
