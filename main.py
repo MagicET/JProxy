@@ -67,7 +67,7 @@ async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authoriz
                         if is_in_reasnoning:
                             is_in_reasnoning = False
                             yield 'data: {"choices":[{"delta":{"content":" </think>"}}]}\n\n'
-                yield "data: " + chunk.json() + "\n\n"
+                yield "data: " + chunk.model_dump_json() + "\n\n"
 
     data = await reqest.json()
 
