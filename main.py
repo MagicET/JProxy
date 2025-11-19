@@ -33,7 +33,7 @@ async def preflight_handler():
     return Response(headers=headers)
 
 @app.post("/proxy")
-async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authorization: str = Header("None")):
+async def callApi(request: Request, url: str, reasoning: str = "hidden", Authorization: str = Header("None")):
     def openai_stream_caller(data, url, key):
         try:
             client = OpenAI(
@@ -69,7 +69,7 @@ async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authoriz
                             yield 'data: {"choices":[{"delta":{"content":" </think>"}}]}\n\n'
                 yield "data: " + chunk.model_dump_json() + "\n\n"
 
-    data = await reqest.json()
+    data = await request.json()
 
     key = Authorization.replace("Bearer ", "")
 
@@ -85,3 +85,30 @@ async def callApi(reqest: Request, url: str, reasoning: str = "hidden", Authoriz
         raise e
     else:
         return StreamingResponse(completion_generator(completion), media_type="text/event-stream", headers=headers)
+
+@app.options("/proxy/blank")
+async def blank_preflight_handler():
+    return Response(
+        headers = {
+        "Access-Control-Allow-Origin": "https://janitorai.com",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Content-Type",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Max-Age": "600"
+        }
+    )
+
+@app.post("/proxy/blank")
+async def returnBlank(request: Request, text: str = "placeholder"):
+    def streaming_generator():
+        yield 'data: {"choices":[{"delta":{"content":"' + text + '"}}]}\n\n'
+
+    return StreamingResponse(
+        content = streaming_generator(),
+        media_type = "text/event-stream", 
+        headers = {
+            "Access-Control-Allow-Origin": "https://janitorai.com",
+            "Access-Control-Allow-Credentials": "true"
+        }
+    )
+
