@@ -33,7 +33,14 @@ async def preflight_handler():
     return Response(headers=headers)
 
 @app.post("/proxy")
-async def callApi(request: Request, url: str, reasoning: str = "hidden", Authorization: str = Header("None")):
+async def callApi(request: Request, url: str, reasoning: str = "", reasoning_visibility: str = "", Authorization: str = Header("None")):
+    def extra_body():
+        if reasoning == "true":
+            return {"chat_template_kwargs": {"thinking":True}}
+        if reasoning == "false":
+            return {"chat_template_kwargs": {"thinking":False}}
+        return {}
+        
     def openai_stream_caller(data, url, key):
         try:
             client = OpenAI(
@@ -46,7 +53,7 @@ async def callApi(request: Request, url: str, reasoning: str = "hidden", Authori
                 messages=data.get("messages"),
                 temperature=data.get("temperature"),
                 stream=data.get("stream"),
-                extra_body={"chat_template_kwargs": {"thinking":True}} if reasoning == "force" else {},
+                extra_body=extra_body(),
             )
             
             return completion
@@ -57,7 +64,7 @@ async def callApi(request: Request, url: str, reasoning: str = "hidden", Authori
         is_in_reasnoning = False
 
         for chunk in completion:
-                if reasoning == "visible" or reasoning == "force":
+                if reasoning_visibility == "true":
                     if getattr(chunk.choices[0].delta, "reasoning_content", None) is not None:
                         if not is_in_reasnoning:
                             is_in_reasnoning = True
